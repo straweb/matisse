@@ -1,0 +1,11 @@
+{
+  "name": "matisse",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "~3.2.0",
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-jslint": "~0.2.5a",
+    "grunt-jsdoc": "~0.3.2"
+  }
+}
