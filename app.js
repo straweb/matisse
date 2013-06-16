@@ -8,7 +8,7 @@
 
     (function setupRoutes() {
         var baseDir = __dirname + '/client/';
-
+        app.use(express.bodyParser());
         //lets setup the static routes
         ['public'].forEach(function (staticRoute) {
             app.use('/' + staticRoute, express.static(baseDir + staticRoute));
@@ -19,7 +19,14 @@
         });
 
         app.post('/authenticate', function (request, response) {
-            response.end(request);
+            var email = request.param('email');
+            var password = request.param('password');
+            if (email === settings.email && password === settings.password) {
+                response.send(200, {success: "Login Successful", user: settings.user});
+            } else {
+                response.send(401, {error: "Invalid username or password"});
+            }
+            response.end();
         });
     }());
     app.listen(serverPort);
