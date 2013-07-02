@@ -1,11 +1,39 @@
 module.exports = function (grunt) {
     'use strict';
     grunt.log.writeln('Running grunt on matisse');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-jslint');
-    grunt.loadNpmTasks('grunt-jsdoc');
-    grunt.registerTask('default', ['jslint', 'uglify', 'jsdoc']);
     grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
+        app: {
+			lessSrc: './client/less',
+			bootstrapSrc: './client/public/lib/bootstrap/css/',
+			cssDest: './client/public/css'
+		},
+		recess: {
+			options: {
+            	compile: true
+	        },
+		    dist: {
+				files: {
+		            '<%= app.cssDest %>/matisse.css': [
+    	    			'<%= app.lessSrc %>/*.less'/*,
+						'<%= app.bootstrapSrc %>/bootstrap.css',
+						'<%= app.bootstrapSrc %>/bootstrap-responsive.css'*/
+        			]
+        		}
+    		}
+		},
+		copy: {
+            css: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= app.src %>',
+                        src: ['**/*.css'],
+                        dest: '<%= app.dist %>'
+                    }
+                ]
+            }
+        },
         clean: {
             all: [
                 'build/*'
@@ -14,8 +42,7 @@ module.exports = function (grunt) {
 
             ]
         },
-        pkg: grunt.file.readJSON('package.json'),
-        jslint: {
+		jslint: {
             files: [
                 'client/public/scripts/*.js',
                 'app.js',
@@ -61,12 +88,24 @@ module.exports = function (grunt) {
                     destination: 'build/docs'
                 }
             }
-        }
+        },
+		watch: {
+            styles: {
+                files: '<%= app.lessSrc %>/*.less',
+                tasks: ['recess']
+            }
+        },
     });
 
-    grunt.registerMultiTask('clean', function () {
-        this.filesSrc.forEach(function (filepath) {
-            console.log('delete', filepath);
-        });
-    });
+
+	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
+	//Todo: To revisit
+	grunt.registerTask('default', ['jslint', 'uglify', 'jsdoc']);
+
+	grunt.registerTask('build', [
+        'clean',
+        'recess'
+    ]);
+	grunt.registerTask('dev', ['build', 'watch']);
 };

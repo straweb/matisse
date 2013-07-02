@@ -4,3 +4,5 @@ authconf.js
 matisse.iml
 *~
 /*.log
+node_modules/
+./client/public/css
