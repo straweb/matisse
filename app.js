@@ -21,8 +21,8 @@
         app.post('/authenticate', function (request, response) {
             var email = request.param('email');
             var password = request.param('password');
-            if (email === settings.email && password === settings.password) {
-                response.send(200, {success: "Login Successful", user: settings.user});
+            if (settings.users[email] && password === settings.users[email].password) {
+                response.send(200, {success: "Login Successful", user: settings.users[email].user});
             } else {
                 response.send(401, {error: "Invalid username or password"});
             }
