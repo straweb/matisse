@@ -7,5 +7,11 @@
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-jslint": "~0.2.5a",
     "grunt-jsdoc": "~0.3.2"
+  },
+  "devDependencies": {
+    "grunt-recess": "~0.3.3",
+    "grunt-contrib-watch": "~0.4.4",
+    "matchdep": "~0.1.2",
+    "grunt-contrib-clean": "~0.4.1"
   }
 }

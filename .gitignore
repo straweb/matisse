@@ -5,3 +5,4 @@ authconf.js
 *~
 /*.log
 node_modules/
+./client/public/css
