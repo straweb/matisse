@@ -1,4 +1,4 @@
-function ApplicationController($scope, $location, connect) {
+function ApplicationController($scope, $location, connect, localize) {
     "use strict";
     $scope.userName = undefined;
     $scope.email = undefined;
@@ -8,6 +8,8 @@ function ApplicationController($scope, $location, connect) {
             connect.authenticate({email: $scope.email, password: $scope.password},
                 function (data) {
                     $scope.userName = data.user;
+                    $scope.createdNum = data.createdNum;
+                    $scope.sharedNum = data.sharedNum;
                     // Change path and handle success
                 }, function (data) {
                     console.log("Error: ", data.error);
@@ -15,10 +17,19 @@ function ApplicationController($scope, $location, connect) {
         }
         return false;
     };
+
+    $scope.setEnglishLanguage = function() {
+        localize.setLanguage('en-US');
+    };
+
+    $scope.setPigLatinLanguage = function() {
+        localize.setLanguage('es-es');
+    };
 }
 
 ApplicationController.$inject = [
     "$scope",
     "$location",
-    "connect"
+    "connect",
+    "localize"
 ];

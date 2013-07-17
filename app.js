@@ -22,7 +22,7 @@
             var email = request.param('email');
             var password = request.param('password');
             if (settings.users[email] && password === settings.users[email].password) {
-                response.send(200, {success: "Login Successful", user: settings.users[email].user});
+                response.send(200, {success: "Login Successful", user: settings.users[email].user, createdNum: settings.users[email].createdNum , sharedNum: settings.users[email].sharedNum});
             } else {
                 response.send(401, {error: "Invalid username or password"});
             }
