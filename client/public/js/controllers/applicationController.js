@@ -3,6 +3,7 @@ function ApplicationController($scope, $location, connect, localize) {
     $scope.userName = undefined;
     $scope.email = undefined;
     $scope.password = undefined;
+    $scope.lang = "en-US";
     $scope.authenticateUser = function () {
         if ($scope.email && $scope.password) {
             connect.authenticate({email: $scope.email, password: $scope.password},
@@ -17,12 +18,25 @@ function ApplicationController($scope, $location, connect, localize) {
         }
         return false;
     };
+    $scope.islogged = function () {
 
-    $scope.setEnglishLanguage = function() {
+    };
+    $scope.logoutUser = function () {
+        connect.logout({},
+            function (data) {
+                $scope.userName = undefined;
+                $scope.createdNum = undefined;
+                $scope.sharedNum = undefined;
+            }, function (data) {
+                console.log("Error: ", data.error);
+            });
+    };
+
+    $scope.setEnglishLanguage = function () {
         localize.setLanguage('en-US');
     };
 
-    $scope.setPigLatinLanguage = function() {
+    $scope.setPigLatinLanguage = function () {
         localize.setLanguage('es-es');
     };
 }

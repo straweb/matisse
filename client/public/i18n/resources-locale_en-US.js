@@ -5,6 +5,11 @@
         "description":""
     },
     {
+        "key":"msg.delete.board",
+        "value":"Delete board with title as ",
+        "description":"alert msg"
+    },
+    {
         "key":"msg.loading",
         "value":"Loading...",
         "description":""
