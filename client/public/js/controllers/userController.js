@@ -9,8 +9,8 @@ function ApplicationController($scope, $location, connect, localize) {
             connect.authenticate({email: $scope.email, password: $scope.password},
                 function (data) {
                     $scope.userName = data.user;
-                    $scope.createdNum = data.createdNum == null? 0 : data.createdNum;
-                    $scope.sharedNum = data.sharedNum == null? 0 : data.sharedNum;
+                    $scope.createdNum = data.createdNum;
+                    $scope.sharedNum = data.sharedNum;
                     // Change path and handle success
                 }, function (data) {
                     console.log("Error: ", data.error);
@@ -19,15 +19,7 @@ function ApplicationController($scope, $location, connect, localize) {
         return false;
     };
     $scope.islogged = function () {
-        connect.authenticate({email: null, password: $scope.password},
-            function (data) {
-                $scope.userName = data.user;
-                $scope.createdNum = data.createdNum == null? 0 : data.createdNum;
-                $scope.sharedNum = data.sharedNum == null? 0 : data.sharedNum;
-                // Change path and handle success
-            }, function (data) {
-                console.log("Error: ", data.error);
-            });
+
     };
     $scope.logoutUser = function () {
         connect.logout({},
