@@ -478,5 +478,10 @@
         "key":"_login.with_",
         "value":"Login with",
         "description":""
+    },
+    {
+        "key":"err.valid.name",
+        "value":"Please enter a valid name!",
+        "description":""
     }
 ]

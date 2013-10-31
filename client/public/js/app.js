@@ -1,6 +1,7 @@
 var modules = [
     "httpService",
-    "localization"
+    "localization",
+    "contentEditable"
 ]
 angular.module('matisse', modules).
     config(['$routeProvider', function ($routeProvider) {

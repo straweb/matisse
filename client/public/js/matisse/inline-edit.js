@@ -10,6 +10,9 @@ $(document).ready(function () {
             this.reset();
             return;
         }
+
+//        updateBoardName();
+
         $.ajax({
             type: "POST",
             url: "/boards/update",

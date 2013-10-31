@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="matisse">
+<html ng-app="matisse" xmlns="http://www.w3.org/1999/html">
 <head>
     <title data-i18n="lbl.matisse"></title>
     <link rel="stylesheet" href="public/lib/bootstrap/css/bootstrap.min.css">
@@ -15,11 +15,10 @@
     <script type="text/javascript" src="public/lib/angular/angular-1.0.5.min.js"></script>
 
     <script src="public/js/localize/localize.js"></script>
-    <script type="text/javascript" src="public/js/matisse/inline-edit.js"></script>
-    <script type="text/javascript" src="public/js/matisse/showAll.js"></script>
 
     <script type="text/javascript" src="public/js/app.js"></script>
 
+    <script type="text/javascript" src="public/js/directives/contentEditableDirective.js"></script>
     <script type="text/javascript" src="public/js/controllers/applicationController.js"></script>
     <script type="text/javascript" src="public/js/controllers/homeController.js"></script>
 
@@ -27,7 +26,7 @@
 
 
 </head>
-<body ng-controller="ApplicationController"  ng-init="islogged()">
+<body ng-controller="ApplicationController" ng-init="islogged()">
 
 <div class="container">
 <div id="loginHeader" class="row-fluid">
@@ -43,11 +42,11 @@
                 <div class="span4">
                     <div class='btn-toolbar' id='rightHeaderButton'>
                         <div class='btn-group' style='padding-right: 10px;'>
-                            <div class="numButton"><h3>{{createdNum}}</h3><h6 data-i18n="lbl.owned.by.me"></h6>
+                            <div class="numButton"><h3>{{ownedBoards.length}}</h3><h6 data-i18n="lbl.owned.by.me"></h6>
                             </div>
                         </div>
                         <div class='btn-group' style='padding-right: 10px;'>
-                            <div class="numButton"><h3>{{sharedNum}}</h3><h6 data-i18n="lbl.shared.with.me"></h6>
+                            <div class="numButton"><h3>{{sharedBoards.length}}</h3><h6 data-i18n="lbl.shared.with.me"></h6>
                             </div>
                         </div>
                     </div>
@@ -56,7 +55,7 @@
                     <div class="row-fluid">
                         <div class="span8">
                             <div class="btn-group pull-right" id="launchButton">
-                                <button class="btn btn-action" ng-data-toggle="modal"
+                                <button class="btn btn-action" data-toggle="modal"
                                         data-target="#whiteboardForm"> {{'msg.whiteboard'|i18n}} &raquo; </button>
                             </div>
                         </div>
@@ -115,20 +114,27 @@
             </div>
         </div>
         <div ng-show="userName" class="row-fluid">
-            <div id="ownedBoardList" class="span8 columns whiteboardList">
+            <div id="ownedBoardList" class="span12 columns whiteboardList">
                 <ul class="thumbnails"></ul>
-                <li class="span2 dashboardLeftThumbnail ">
+                <li class="span3 dashboardLeftThumbnail " ng-repeat="board in ownedBoards">
                     <div class="thumbnail dashboardThumbnail dashboardWhiteBoardItem">
-                        <div boardurl="lbwz3zhs" name="test by thulasiram" title="Delete Board"
-                             class="delete-board">
+                        <div boardurl="{{board.createdUrl}}" name="{{board.name}}" title="Delete Board"
+                             class="delete-board" ng-click="deleteBoard(board)">
                             <center>
                                 <div class="delete-ico"></div>
                             </center>
                         </div>
-                        <a href="/boards/lbwz3zhs"><img src="public/images/140x120.gif" alt=""></a>
+                        <a href="board\{{board.createdUrl}}"><img src="public/images/140x120.gif" alt=""></a>
 
-                        <div class="thumbnailText"><p id="board-name-327" class="thumbnailCaption editable"
-                                                      title="Click to edit..." style="">test by thulasiram</p></div>
+                        <div class="thumbnailText">
+
+                            <p id="board-name-{{board._id}}" class="thumbnailCaption editable"
+                               title="{{'msg.click.to.edit'|i18n}}"
+                               contenteditable
+                               ng-model="board.name"
+                               strip-br="true"
+                               required></p>
+                        </div>
                     </div>
                 </li>
             </div>
@@ -159,13 +165,13 @@
             </div>
         </div>
         <div ng-show="userName" class="row-fluid">
-            <div class="span8 columns whiteboardList">
+            <div class="span12 columns whiteboardList">
                 <ul class="thumbnails"></ul>
-                <li class="span2 dashboardLeftThumbnail ">
+                <li class="span3 dashboardLeftThumbnail " ng-repeat=" board in sharedBoards">
                     <div class="thumbnail dashboardThumbnail dashboardWhiteBoardItem"><a
-                            href="/boards/w25hcdmm"><img src="public/images/140x120.gif" alt=""></a>
+                            href="boards\{{board.sharedUrl}}"><img src="public/images/140x120.gif" alt=""></a>
 
-                        <div class="thumbnailText"><p class="thumbnailCaption">test</p>
+                        <div class="thumbnailText"><p class="thumbnailCaption">{{board.name}}</p>
 
                             <p class="thumbnailCaption"></p></div>
                     </div>
@@ -242,6 +248,82 @@
             </div>
         </div>
     </div>
+
+
+    <div id="whiteboardForm" style="display: none;" class="modal hide fade">
+        <div class="modal-header"><h4>{{'msg.whiteboard'|i18n}}<a data-dismiss="modal" class="close">x</a></h4></div>
+        <div class="modal-body">
+            <form name="whiteboard" id="whiteboard" class="form-horizontal">
+                <fieldset>
+                    <div id="whiteboardName" class="control-group"><label for="whiteboardName" class="control-label">{{'lbl.name'
+                        | i18n}}*:</label>
+
+                        <div class="controls"><input name="whiteboardName" id="name" type="text" placeholder="boardName"
+                                                     value="{{boardName}}">
+
+                            <div id="nameError" data-i18n="err.valid.name"></div>
+                        </div>
+                    </div>
+                    <div id="containerlist" style="display:none" class="control-group"><label for="containerListInput"
+                                                                                              class="control-label">Container
+                        type:</label>
+
+                        <div class="controls"><select name="container" id="containers">
+                            <option value="desktop-1024x768" id="desktop-1024x768">Desktop-1024x768</option>
+                            <option value="desktop-1280x1024" id="desktop-1280x1024">Desktop-1280x1024</option>
+                            <option value="iphone" id="iPhone">iPhone</option>
+                            <option value="ipad" id="iPad">iPad</option>
+                            <option value="blackberry" id="BlackBerry">BlackBerry</option>
+                            <option value="browser" id="Browser">Browser</option>
+                        </select></div>
+                    </div>
+                    <div id="layoutList" style="display:none" class="control-group"><label for="layoutListInput"
+                                                                                           class="control-label">Template:</label>
+
+                        <div class="controls"><select name="layout" id="layouts">
+                            <optgroup label="content">
+                                <option value="blank" id="blank">Blank</option>
+                                <option value="column_header" id="column_header">Column_header</option>
+                                <option value="column_header_footer" id="column_header_footer">Column_Header_Footer
+                                </option>
+                                <option value="two_column_header" id="two_column_header">Two_Column_Header</option>
+                                <option value="two_column_header_footer" id="two_column_header_footer">
+                                    Two_Column_Header_Footer
+                                </option>
+                                <option value="three_column_header" id="three_column_header">Three_Column_Header
+                                </option>
+                                <option value="three_column_header_footer" id="three_column_header_footer">
+                                    Three_Column_Header_Footer
+                                </option>
+                            </optgroup>
+                        </select></div>
+                    </div>
+                    <div id="canvaswidth" style="display:none" class="control-group"><label for="canvasWidth"
+                                                                                            class="control-label">Canvas
+                        Width:</label>
+
+                        <div class="controls"><input name="canvasWidth" id="canvasWidth" type="text" value="1024"></div>
+                    </div>
+                    <div id="canvasheight" style="display:none" class="control-group"><label for="canvasWidth"
+                                                                                             class="control-label">Canvas
+                        Height:</label>
+
+                        <div class="controls"><input name="canvasHeight" id="canvasHeight" type="text" value="768">
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="modal-footer"><p class="help-block pull-left">*{{'lbl.required' | i18n}}</p><a href="#"
+                                                                                                   data-dismiss="modal"
+                                                                                                   id="createWhiteboard"
+                                                                                                   ng-click="newboards(boardName)"
+                                                                                                   class="btn btn-primary"
+                                                                                                   data-i18n="lbl.create"></a><a
+                href="#" data-dismiss="modal" class="btn" data-i18n="lbl.cancel"></a></div>
+    </div>
+
+
 </div>
 
 

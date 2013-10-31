@@ -48,7 +48,7 @@ BoardProvider.prototype.findByEmail = function(email, callback) {
     this.getCollection(function(error, board_collection) {
         if( error ) callback(error)
         else {
-            board_collection.find({email: email}, function(error, result) {
+            board_collection.find({email: email}).toArray(function(error, result) {
                 if( error ) callback(error)
                 else callback(null, result)
             });
